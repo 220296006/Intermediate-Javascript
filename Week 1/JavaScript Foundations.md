@@ -61,17 +61,20 @@ window.close();
 
 ```
 
-```JS
-
-
-```
+- setTimeout() and setInterval(): These methods are used to schedule the execution of functions after a specified delay (setTimeout) or at regular intervals (setInterval).
 
 ```JS
 
+setTimeout(function() {
+  alert("This alert will appear after 3 seconds.");
+}, 3000);
+
+setInterval(function() {
+  console.log("This message will be logged every 2 seconds.");
+}, 2000);
 
 ```
 
-```JS
+These are some of the core methods for working with popups and browser windows in JavaScript. While they can be useful for creating interactive user experiences, developers should use them judiciously to avoid annoying or disrupting the user's browsing experience. Additionally, modern web development practices often emphasize using alternative techniques like modal dialogs and pop-up components provided by frameworks to improve user experience and security.
 
 
-```
