@@ -399,3 +399,5 @@ inputElement.blur();
 - Pop-up windows may be subject to browser pop-up blockers, so they may not receive focus as expected unless the user explicitly triggers them (e.g., via a button click).
 
 In most cases, focusing and blurring are used to enhance user interactions and improve accessibility in web applications.
+
+
