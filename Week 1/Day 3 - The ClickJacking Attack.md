@@ -48,7 +48,7 @@ Clickjacking attacks are a serious security concern, as they can lead to financi
 
 #### Framebusting
 
-rame busting, also known as framekiller or framebusting code, is a security technique used to prevent a webpage from being displayed within an iframe on another website. This technique is employed to protect against clickjacking attacks and to ensure that a webpage is always displayed in a top-level window rather than within an iframe.
+Frame busting, also known as framekiller or framebusting code, is a security technique used to prevent a webpage from being displayed within an iframe on another website. This technique is employed to protect against clickjacking attacks and to ensure that a webpage is always displayed in a top-level window rather than within an iframe.
 
 Here's how frame busting works and how it can be implemented:
 
