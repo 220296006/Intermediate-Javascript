@@ -293,3 +293,204 @@ We use the fetch() function to send a POST request to a server endpoint ('<https
 We handle the response from the server using .then() and .catch(), logging the response data on success and any errors that occur.
 
 Optionally, after a successful submission, you can reset the form using myForm.reset() to clear the input fields for the next submission.
+
+## Sending a form with Blob data
+
+Sending a form with Blob data, such as images or other binary files, using JavaScript and the FormData object is very similar to sending a form with a file input. The main difference is how you create the Blob and append it to the FormData object. Here's a step-by-step example:
+
+
+```html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form with Blob Data</title>
+</head>
+<body>
+    <form id="myForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="avatar">Avatar:</label>
+        <input type="file" id="avatar" accept=".jpg, .jpeg, .png" required>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+```
+
+```JS
+document.addEventListener('DOMContentLoaded', function () {
+  const myForm = document.getElementById('myForm');
+
+  myForm.addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    // Create a new FormData object
+    const formData = new FormData();
+
+    // Append text data
+    formData.append('name', document.getElementById('name').value);
+
+    // Retrieve the selected file from the file input
+    const avatarInput = document.getElementById('avatar');
+    const avatarFile = avatarInput.files[0];
+
+    // Create a Blob from the selected file
+    const avatarBlob = new Blob([avatarFile], { type: avatarFile.type });
+
+    // Append the Blob to the FormData object
+    formData.append('avatar', avatarBlob, avatarFile.name);
+
+    // Send a POST request to the server with the FormData object
+    fetch('https://api.example.com/submit-form', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Form submission response:', data);
+        // Optionally, you can reset the form after successful submission
+        myForm.reset();
+      })
+      .catch((error) => {
+        console.error('Form submission error:', error);
+      });
+  });
+});
+
+
+```
+
+We have an HTML form that includes a file input (<input type="file">) for uploading an avatar image. We set the accept attribute to specify the allowed file types.
+
+In the JavaScript code, we create a Blob object from the selected file using new Blob([avatarFile], { type: avatarFile.type }). This Blob represents the binary data of the selected file and includes its MIME type.
+
+We append the created Blob to the FormData object using formData.append('avatar', avatarBlob, avatarFile.name). The third argument, avatarFile.name, specifies the file name for the blob in the FormData.
+
+The rest of the JavaScript code is similar to the previous examples. We prevent the default form submission, create a FormData object, and send a POST request to a server endpoint with the FormData as the request body.
+
+After a successful submission, you can reset the form using myForm.reset() to clear the input fields for the next submission.
+
+## Fetch: Download progress
+
+You can track the download progress of a file using the fetch() function in JavaScript by leveraging the Response.body property and the ReadableStream API. By monitoring the progress of the stream, you can keep track of how much of the file has been downloaded. Here's an example of how to do it:
+
+
+```JS
+const fileUrl = 'https://example.com/somefile.zip'; // Replace with your file URL
+
+fetch(fileUrl)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    // Get the content length of the file from the response headers
+    const contentLength = parseInt(response.headers.get('content-length'), 10);
+    let downloaded = 0; // Track the amount downloaded
+
+    // Create a ReadableStream from the response body
+    const reader = response.body.getReader();
+
+    // Function to read and track progress
+    function read() {
+      return reader.read().then(({ done, value }) => {
+        if (done) {
+          console.log('Download complete');
+          return;
+        }
+
+        downloaded += value.length;
+        console.log(`Downloaded ${downloaded} bytes of ${contentLength} bytes (${((downloaded / contentLength) * 100).toFixed(2)}%)`);
+
+        // Continue reading the stream
+        return read();
+      });
+    }
+
+    // Start reading the stream
+    return read();
+  })
+  .catch((error) => {
+    console.error('Download error:', error);
+  });
+
+
+```
+
+We initiate a fetch() request to download a file from a given URL.
+
+Inside the .then() block, we first check if the response is OK. Then, we extract the content length of the file from the content-length header in the response.
+
+We create a ReadableStream from the response body using response.body.getReader(). The getReader() method provides a readable stream interface for the response body.
+
+We define a read() function that reads data from the stream using reader.read(). The read() function is called recursively until all the data is read. During each read, we update the downloaded variable with the number of bytes read and calculate the download progress as a percentage.
+
+We start reading the stream by calling read().
+
+If any errors occur during the download, they are caught and logged in the .catch() block.
+
+## Fetch: Abort
+
+
+```JS
+
+// Create an AbortController instance
+const controller = new AbortController();
+const signal = controller.signal;
+
+// Create the fetch request with the signal option
+const fetchPromise = fetch('https://api.example.com/data', { signal });
+
+// Add an event listener to a button or any other element to cancel the fetch
+const cancelButton = document.getElementById('cancelButton');
+
+cancelButton.addEventListener('click', () => {
+  // Abort the fetch request when the cancel button is clicked
+  controller.abort();
+});
+
+// Handle the fetch response
+fetchPromise
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Network response was not ok');
+    }
+  })
+  .then((data) => {
+    console.log('Fetch succeeded:', data);
+  })
+  .catch((error) => {
+    if (error.name === 'AbortError') {
+      console.log('Fetch aborted by user');
+    } else {
+      console.error('Fetch error:', error);
+    }
+  });
+
+```
+
+
+We create an AbortController instance by calling new AbortController(). This controller is used to create an AbortSignal, which we pass as the signal option in the fetch request.
+
+We create the fetch request using fetch('<https://api.example.com/data>', { signal }), where signal is the AbortSignal associated with the controller.
+
+We add an event listener to a cancel button (or any other element) that, when clicked, calls controller.abort() to cancel the fetch request.
+
+We handle the fetch response as usual. If the response is successful, we parse it as JSON. If there's an error, we check if it's an AbortError to determine if the fetch was aborted by the user.
+
+y using AbortController and AbortSignal, you can gracefully cancel ongoing fetch requests, which can be helpful in scenarios where you want to provide users with the ability to cancel long-running requests or prevent unnecessary network activity.
