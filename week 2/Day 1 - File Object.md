@@ -254,7 +254,7 @@ uploadButton.addEventListener('click', () => {
 
 ```
 
-1. We have an HTML input element (<input type="file" id="imageInput">) for the user to select an image file.
+1. We have an HTML input element (input type="file" id="imageInput") for the user to select an image file.
 
 2. When the "Upload Image" button is clicked, we get the selected image file from the input element.
 
