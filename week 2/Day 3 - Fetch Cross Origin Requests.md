@@ -259,6 +259,7 @@ fetch('https://api.example.com/data', {
 
 
 ```
+
 The choice of the credentials value depends on the security and privacy requirements of your application:
 
 Use "same-origin" when you only want to include credentials for same-origin requests, which is the default behavior and is generally safe.
@@ -309,3 +310,10 @@ fetch('https://api.example.com/data')
   });
 
 ```
+
+In this example:
+
+We use the fetch() function to send a GET request to '<https://api.example.com/data>'.
+The .then() method is used to handle the response. If the response is not OK (status code 200-299), we throw an error. Otherwise, we parse the JSON response and log the data.
+The .catch() method is used to handle any errors that occur during the fetch.
+The Fetch API is a powerful tool for handling network requests in modern web applications. It provides a more modern and flexible alternative to XMLHttpRequest, making it easier to work with APIs and fetch data from servers.
