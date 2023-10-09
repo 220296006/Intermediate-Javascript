@@ -224,7 +224,6 @@ const parts = text.split(pattern); // ["apple", "banana", "orange"]
 
 5. matchAll(): The matchAll() method returns an iterator of all matches of a regular expression pattern in a string, including capturing groups.
 
-
 ```JS
 const text = 'I have 3 apples and 2 oranges.';
 const pattern = /(\d+) (\w+)/g;
@@ -255,24 +254,182 @@ const match = text.match(pattern); // "a" (first character that matches)
 
 ```
 
+2. Ranges: You can specify a range of characters using a hyphen - within the character class. For example, [a-z] matches any lowercase letter from "a" to "z."
+
 ```JS
 
-
+const pattern = /[a-z]/;
+const text = 'Hello123';
+const match = text.match(pattern); // "e" (first lowercase letter that matches)
 
 ```
+
+3. Negation: By placing a caret ^ at the beginning of the character class, you can negate it to match any character that is not in the specified set. For example, [^0-9] matches any character that is not a digit.
+
+```JS
+const pattern = /[^0-9]/;
+const text = 'Hello123';
+const match = text.match(pattern); // "H" (first non-digit character that matches)
+
+```
+
+4. Escape Special Characters: Certain characters have special meanings in regular expressions, such as . or *. To match these characters literally, you can escape them using a backslash \ within the character class. For example, [\*+] matches either an asterisk (*) or a plus sign (+).
+
 ```JS
 
+const pattern = /[\*+]/;
+const text = '2 + 3 * 4';
+const match = text.match(pattern); // "+" (first character that matches)
 
 ```
+
+5. Character Class Shorthand: Some character classes have shorthand notations for common character sets. For example:
+
+- \d matches any digit (equivalent to [0-9]).
+- \w matches any word character (letters, digits, or underscore).
+- \s matches any whitespace character (spaces, tabs, line breaks, etc.).
+
 ```JS
 
+const pattern = /\d\s\w/;
+const text = '2 a';
+const match = text.match(pattern); // "2 a"
 
 ```
+
+Character classes are useful for matching specific types of characters within a larger pattern. They provide a way to define sets of characters concisely and precisely in regular expressions, making it easier to perform tasks like data validation, text extraction, and pattern matching.
+
+## Word boundary \b
+
+In regular expressions, the \b (word boundary) is a metacharacter that represents a position in the string where a "word" begins or ends. It does not match any actual characters but rather a position between characters. Word boundaries are useful for precisely defining where you want to locate words within a text.
+
+Here's how the \b word boundary works:
+
+- \b matches at the beginning or end of a word, where a word is defined as a sequence of word characters (letters, digits, or underscores).
+- \b does not consume any characters; it only checks the position between characters.
+- \b is often used with other regular expression patterns to locate whole words.
+
+Here are some examples of using \b:
+
+1. Word Matching:
+
 ```JS
 
+const pattern = /\bapple\b/;
+const text = 'I have an apple and a pineapple.';
+const match = text.match(pattern); // "apple"
 
 ```
+
+In this example, the \b ensures that "apple" is matched as a whole word, and "pineapple" is not considered a match because it is part of a larger word.
+
+2. Word Boundary in Replacement:
+
 ```JS
 
+const text = 'I like apples.';
+const pattern = /\bapples\b/;
+const newText = text.replace(pattern, 'bananas');
+// "I like bananas."
+```
+
+Using \b in replacement ensures that only the whole word "apples" is replaced and not a part of a larger word.
+
+3. Finding Words in a Text:
+
+```JS
+
+const pattern = /\b\w{5}\b/g; // Matches 5-letter words
+const text = 'Apple mango pear plum grape.';
+const matches = text.match(pattern); // ["Apple", "grape"]
 
 ```
+
+This example finds 5-letter words in the text using \b to ensure whole-word matches.
+
+4. Word Boundary and Non-Word Characters:
+
+```JS
+
+const pattern = /\b\d+\b/;
+const text = '123 apple 456';
+const matches = text.match(pattern); // ["123", "456"]
+
+```
+
+\b allows matching whole numbers while ignoring the adjacent letters.
+
+Word boundaries are particularly useful when you want to find, replace, or manipulate whole words within a text, such as when performing text processing, data extraction, or search operations where you need to consider word boundaries.
+
+## Inverse Classes
+
+In regular expressions, "inverse classes" or "negated character classes" are used to match any character that is not in a specified set of characters. You can create inverse classes by using the ^ (caret) character as the first character within a character class [...]. This negates the character class, causing it to match characters that are not in the set.
+
+Here's how to create and use inverse classes:
+
+1. Negating a Character Class:
+
+To create an inverse class, place a ^ immediately after the opening square bracket [. For example, [^abc] matches any character that is not "a," "b," or "c."
+
+```JS
+
+const pattern = /[^abc]/;
+const text = 'apple';
+const match = text.match(pattern); // "p" (matches the first character that is not "a", "b", or "c")
+
+```
+
+2. Using Inverse Classes for Character Sets:
+
+You can use inverse classes with character sets and ranges as well. For example, [^0-9] matches any character that is not a digit.
+
+```JS
+const pattern = /[^0-9]/;
+const text = 'Hello123';
+const match = text.match(pattern); // "H" (first character that is not a digit)
+
+```
+
+3. Using Inverse Classes with Shorthand Character Classes:
+
+Inverse classes can also be used with shorthand character classes. For example, [\D] matches any non-digit character, and [\S] matches any non-whitespace character.
+
+```JS
+
+const pattern = /[\D]/;
+const text = 'Hello123';
+const match = text.match(pattern); // "H" (first non-digit character)
+
+```
+
+Inverse classes are handy when you need to match characters that don't belong to a specific set or when you want to exclude certain characters from a pattern. They are commonly used for data validation, input sanitization, and text processing tasks where you need to identify characters that should be excluded from a match.
+
+## Spaces are regular characters
+
+In regular expressions, spaces are indeed treated as regular characters by default. This means that a space character in a regular expression pattern matches a space character in the input text. For example, the regular expression pattern /apple banana/ will match the string "apple banana" exactly as it is, including the space character.
+
+Here's an example of using a regular expression pattern with space characters:
+
+```JS
+
+const pattern = /apple banana/;
+const text = 'I like apple banana.';
+const match = text.match(pattern); // "apple banana"
+
+```
+
+In this example, the regular expression /apple banana/ is used to search for the string "apple banana" in the input text, and it matches it successfully.
+
+If you want to match spaces or any other specific characters more flexibly, you can include those characters in your regular expression pattern. For example, if you want to match one or more spaces, you can use the \s+ pattern, where \s represents any whitespace character (including spaces, tabs, and line breaks), and + means one or more occurrences:
+
+```JS
+
+const pattern = /apple\s+banana/;
+const text = 'I like apple     banana.'; // Multiple spaces between "apple" and "banana"
+const match = text.match(pattern); // "apple     banana"
+
+```
+
+In this case, the regular expression matches "apple" followed by one or more whitespace characters (including spaces) and then "banana."
+
+Remember that spaces and other characters in regular expressions can be combined and used creatively to match specific patterns in text, making regular expressions a powerful tool for text processing and pattern matching.
